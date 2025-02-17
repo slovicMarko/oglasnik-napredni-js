@@ -62,7 +62,7 @@
         <tr *ngFor="let post of posts; let i = index">
           <td>{{ post.korisnik }}</td>
           <td [routerLink]="['/post', post.id]">{{ post.naslov }}</td>
-          <td>{{ post.opis | slice : 0 : 60 }}...</td>
+          <td>{{ post.opis | truncate : 60 }}...</td>
           <td>
             <button
               class="btn deleteBtn"

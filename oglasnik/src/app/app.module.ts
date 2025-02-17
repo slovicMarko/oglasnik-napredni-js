@@ -17,6 +17,9 @@ import { NewPostComponent } from './components/new-post/new-post.component';
 import { AdminViewComponent } from './components/admin-view/admin-view.component';
 import { ErrorPageComponent } from './components/error-page/error-page.component';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { TruncatePipe } from './pipes/truncate.pipe';
+import { CurrencyFormatPipe } from './pipes/currency-format.pipe';
+import { DateTimeFormatPipe } from './pipes/date-time-format.pipe';
 
 @NgModule({
   declarations: [
@@ -32,6 +35,9 @@ import { GoogleMapsModule } from '@angular/google-maps';
     NewPostComponent,
     AdminViewComponent,
     ErrorPageComponent,
+    TruncatePipe,
+    CurrencyFormatPipe,
+    DateTimeFormatPipe,
   ],
   imports: [
     BrowserModule,

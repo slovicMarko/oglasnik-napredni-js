@@ -12,13 +12,11 @@
         <p class="location">📍 {{ post.grad }}, {{ post.zupanija }}</p>
         <p>
           <strong>Cijena:</strong>
-          <span class="price"> {{ post.cijena }} EUR</span>
+          <span class="price"> {{ post.cijena | currencyFormat }}</span>
         </p>
         <p>
           <strong>Datum objave:</strong>
-          <span class="date">
-            {{ post.datum_objave | date : "dd.MM.yyyy." }}</span
-          >
+          <span class="date"> {{ post.datum_objave | dateTimeFormat }}</span>
         </p>
       </div>
 

@@ -10,10 +10,10 @@
           <div class="post-meta">
             <p><strong>Kategorija:</strong> {{ post.kategorija }}</p>
             <p class="location">📍 {{ post.grad }}, {{ post.zupanija }}</p>
-            <p><strong>Cijena:</strong> {{ post.cijena }} €</p>
+            <p><strong>Cijena:</strong> {{ post.cijena | currencyFormat }}</p>
             <p>
               <strong>Datum objave:</strong>
-              {{ post.datum_objave | date : "dd.MM.yyyy" }}
+              {{ post.datum_objave | dateTimeFormat }}
             </p>
           </div>
 
