@@ -17,6 +17,23 @@
           formControlName="username"
           autocomplete="off"
         />
+        <div
+          class="error"
+          *ngIf="
+            registerForm.get('username')?.invalid &&
+            registerForm.get('username')?.touched
+          "
+        >
+          <span *ngIf="registerForm.get('username')?.errors?.['required']"
+            >Username is required.</span
+          >
+          <span *ngIf="registerForm.get('username')?.errors?.['minlength']"
+            >Username must be at least 4 characters long.</span
+          >
+          <span *ngIf="registerForm.get('username')?.errors?.['pattern']"
+            >Only letters and numbers are allowed.</span
+          >
+        </div>
       </div>
 
       <div class="form-group">
@@ -27,6 +44,24 @@
           id="password"
           formControlName="password"
         />
+        <div
+          class="error"
+          *ngIf="
+            registerForm.get('password')?.invalid &&
+            registerForm.get('password')?.touched
+          "
+        >
+          <span *ngIf="registerForm.get('password')?.errors?.['required']"
+            >Password is required.</span
+          >
+          <span *ngIf="registerForm.get('password')?.errors?.['minlength']"
+            >Password must be at least 8 characters.</span
+          >
+          <span *ngIf="registerForm.get('password')?.errors?.['pattern']">
+            Password must contain at least one uppercase letter, one number, and
+            one special character.
+          </span>
+        </div>
       </div>
 
       <div class="form-group">
@@ -37,6 +72,12 @@
           id="repeatPassword"
           formControlName="repeatPassword"
         />
+        <div
+          class="error"
+          *ngIf="registerForm.errors?.['passwordsMismatch'] && registerForm.get('repeatPassword')?.touched"
+        >
+          <span>Passwords do not match.</span>
+        </div>
       </div>
 
       <div class="form-group">
@@ -48,6 +89,15 @@
           formControlName="name"
           autocomplete="off"
         />
+        <div
+          class="error"
+          *ngIf="
+            registerForm.get('name')?.invalid &&
+            registerForm.get('name')?.touched
+          "
+        >
+          <span>Name is required.</span>
+        </div>
       </div>
 
       <div class="form-group">
@@ -59,10 +109,30 @@
           formControlName="email"
           autocomplete="off"
         />
+        <div
+          class="error"
+          *ngIf="
+            registerForm.get('email')?.invalid &&
+            registerForm.get('email')?.touched
+          "
+        >
+          <span *ngIf="registerForm.get('email')?.errors?.['required']"
+            >Email is required.</span
+          >
+          <span *ngIf="registerForm.get('email')?.errors?.['email']"
+            >Invalid email format.</span
+          >
+        </div>
       </div>
 
       <div class="btn-container">
-        <button type="submit" class="btn registerBtn">Register</button>
+        <button
+          type="submit"
+          class="btn registerBtn"
+          [disabled]="registerForm.invalid"
+        >
+          Register
+        </button>
       </div>
 
       <a [routerLink]="['/login']">Back to login form</a>

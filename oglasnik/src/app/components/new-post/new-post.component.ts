@@ -24,6 +24,7 @@ export class NewPostComponent {
   userId: number = -1;
   isAuthor: boolean = false;
   post: any = {};
+  isNewPost: boolean = true;
 
   selectedParentCategories: number = -1;
   selectedCategory: number = -1;
@@ -53,7 +54,7 @@ export class NewPostComponent {
 
       if (this.postId) {
         this.userId = user.user.id;
-
+        this.isNewPost = false;
         this.postService.getPostbyId(this.postId).subscribe({
           next: (post) => {
             this.post = post[0];
