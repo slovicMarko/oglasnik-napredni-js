@@ -42,7 +42,7 @@ h1 {
 }
 
 .form-group input:focus {
-  border-color: #548c2f;
+  border-color: #0056b3;
   outline: none;
 }
 
@@ -63,22 +63,22 @@ h1 {
 }
 
 .loginBtn {
-  background-color: #548c2f;
+  background-color: #0056b3;
   color: white;
 }
 
 .loginBtn:hover {
-  background-color: #4d7f27;
+  background-color: #004494;
 }
 
 .registerBtn {
   background-color: white;
-  color: #548c2f;
-  border: 2px solid #548c2f;
+  color: #0056b3;
+  border: 2px solid #0056b3;
 }
 
 .registerBtn:hover {
-  background-color: #548c2f;
+  background-color: #0056b3;
   color: white;
 }
 

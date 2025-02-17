@@ -46,7 +46,6 @@ export class AdminViewComponent {
     this.userService.getUsers().subscribe({
       next: (users) => {
         this.users = users;
-        console.log(users);
       },
       error: (error) => {
         console.error('Error loading categories:', error);

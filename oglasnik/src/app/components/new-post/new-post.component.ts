@@ -56,7 +56,7 @@ export class NewPostComponent {
 
         this.postService.getPostbyId(this.postId).subscribe({
           next: (post) => {
-            this.post = post;
+            this.post = post[0];
             this.checkOwnership();
           },
           error: (error) => {
@@ -81,9 +81,8 @@ export class NewPostComponent {
       this.description = this.post.opis;
       this.price = this.post.cijena;
       this.title = this.post.naslov;
-      console.log("vlasnik");
     } else {
-      console.log("restrikcija");
+      this.router.navigate(["/error"]);
     }
   }
 

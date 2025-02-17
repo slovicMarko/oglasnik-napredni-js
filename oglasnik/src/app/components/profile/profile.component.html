@@ -17,7 +17,7 @@
             </p>
           </div>
 
-          <div *ngIf="post.korisnik_id === user.id">
+          <div *ngIf="post.korisnik_id === user.id" class="btns">
             <a [routerLink]="['/new-post', post.id]" class="btn editBtn"
               >Edit</a
             >
@@ -28,7 +28,6 @@
         </div>
       </div>
     </div>
-    <a [routerLink]="['']" class="back-link">Back</a>
   </div>
 
   <div class="user-data">

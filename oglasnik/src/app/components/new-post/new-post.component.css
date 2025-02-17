@@ -30,17 +30,17 @@
   border: 1px solid #ddd;
   border-radius: 8px;
   box-sizing: border-box;
-  font-size: 16px; /* Adjusting font size for readability */
+  font-size: 16px;
 }
 
 .form-group textarea {
-  height: 150px; /* Ensuring the textarea is tall enough */
-  resize: vertical; /* Allow users to resize the textarea vertically */
+  height: 150px;
+  resize: vertical;
 }
 
 .submit-button {
   width: 100%;
-  background-color: #549b2d;
+  background-color: #0056b3;
   color: white;
   border: none;
   padding: 10px;
@@ -50,5 +50,5 @@
 }
 
 .submit-button:hover {
-  background-color: #467a24;
+  background-color: #003f80;
 }

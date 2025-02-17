@@ -45,17 +45,6 @@
   color: #333;
 }
 
-a {
-  display: inline-block;
-  margin-top: 20px;
-  color: rgb(84, 110, 45);
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
 .back-link {
   color: rgb(84, 110, 45);
   font-size: 16px;
@@ -64,17 +53,60 @@ a:hover {
 }
 
 .add-post-button {
-  background-color: #549b2d;
-  color: white;
-  border: none;
-  width: 250px;
-  padding: 10px 20px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
   border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-bottom: 20px;
+  margin: 10px;
+  padding: 15px;
+  width: 200px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .add-post-button:hover {
-  background-color: #467a24;
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  color: #007bff;
+}
+
+.btns {
+  display: flex;
+  height: 32px;
+}
+
+.btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: ease 0.3s;
+  text-decoration: none;
+}
+
+.editBtn {
+  background: #0056b3;
+  color: white;
+}
+
+.editBtn:hover {
+  background: #003f80;
+}
+
+.deleteBtn {
+  background: #dc3545;
+  color: white;
+  margin-left: 10px;
+}
+
+.deleteBtn:hover {
+  background: #c82333;
 }

@@ -1,45 +1,70 @@
 .navbar {
-    background: #007bff;
-    color: white;
-    padding: 15px 20px;
-    display: flex;
-    justify-content: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
+  background: #007bff;
+  padding: 15px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+}
+
+.nav-links,
+.admin-links {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+  padding: 0;
+}
+
+.nav-links li,
+.admin-links li {
+  display: inline;
+}
+
+.nav-links a,
+.admin-links a {
+  text-decoration: none;
+  color: white;
+  font-weight: 500;
+  padding: 8px 12px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.nav-links a:hover,
+.admin-links a:hover {
+  background: white;
+  color: #007bff;
+  border-radius: 5px;
+}
+
+.nav-links a[click] {
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
   .container {
-    display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    width: 90%;
-    max-width: 1200px;
   }
-  
-  .logo {
-    font-size: 20px;
-    font-weight: bold;
-    color: white;
-    text-decoration: none;
+
+  .nav-links,
+  .admin-links {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    margin-top: 10px;
   }
-  
-  .nav-links {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-  }
-  
-  .nav-links li, .admin-links li {
-    display: inline;
-  }
-  
-  .nav-links a, .admin-links a {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-  }
-  
-  .nav-links a:hover {
-    text-decoration: underline;
-    cursor: pointer;
-  }
-  
+}

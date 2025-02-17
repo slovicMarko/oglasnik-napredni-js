@@ -79,7 +79,7 @@ export const getUsers = (req, res) => {
 
 export const getUserById = (req, res) => {
   const { userId } = req.params;
-  const query = `SELECT * FROM korisnici WHERE id = ?`;
+  const query = `SELECT ime, username, email FROM korisnici WHERE id = ?`;
   db.query(query, [userId], (err, result) => {
     if (err || result.length === 0)
       return res.status(400).send({ error: "User not found" });
@@ -126,7 +126,6 @@ const query = promisify(db.query).bind(db);
 export const updatePost = async (req, res) => {
   try {
     const { id, cijena, grad, korisnik_id, naslov, opis, slike } = req.body;
-    console.log({ id, cijena, grad, korisnik_id, naslov, opis, slike });
 
     const updateQuery = `UPDATE oglasi SET naslov = ?, opis = ?, cijena = ?, grad_id = ? WHERE id = ? AND korisnik_id = ?`;
 
@@ -175,9 +174,11 @@ const getPostsQuery = `
   SELECT 
     o.*, 
     k.naziv AS kategorija, 
+    k.nadkategorija_id,
     g.naziv AS grad, 
     u.username AS korisnik, 
     z.naziv AS zupanija,
+    z.id as zupanija_id,
     GROUP_CONCAT(s.url_slike) AS slike 
   FROM oglasi o
   INNER JOIN korisnici u ON o.korisnik_id = u.id
@@ -198,7 +199,6 @@ const getPosts = (whereClause = "", params = [], res) => {
         ? post.slike.split(",").map((slika) => slika.replace("\\", "/"))
         : [];
     });
-    console.log(result);
     res.send(result);
   });
 };

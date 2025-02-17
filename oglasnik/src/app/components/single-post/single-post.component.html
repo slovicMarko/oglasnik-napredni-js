@@ -31,7 +31,16 @@
         <h3>Opis oglasa:</h3>
         <p>{{ post.opis }}</p>
       </div>
+
+      <div class="post-description">
+        <h3>Kontakt podaci:</h3>
+        <p><strong>Ime:</strong> {{ user.ime }}</p>
+        <p><strong>Korisničko ime:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+      </div>
     </div>
+
+    <hr />
 
     <div id="map" style="height: 400px; width: 100%; margin-top: 20px"></div>
   </div>

@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { PostService } from "../../services/post.service";
+import { UserService } from "../../services/user.service";
 
 @Component({
   selector: "app-single-post",
@@ -9,6 +10,7 @@ import { PostService } from "../../services/post.service";
 })
 export class SinglePostComponent {
   post: any = {};
+  user: any = {};
   postId: number = -1;
   map: any;
   lat: number = 45.1;
@@ -17,25 +19,38 @@ export class SinglePostComponent {
 
   constructor(
     private postService: PostService,
+    private userService: UserService,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
       this.postId = +params["id"];
-      this.loadPosts();
+      this.loadPost();
     });
   }
 
-  loadPosts(): void {
+  loadPost(): void {
     this.postService.getPostbyId(this.postId).subscribe({
       next: (post) => {
         this.post = post[0];
         this.query = `${this.post.grad}, ${this.post.zupanija}`;
+        this.loadUser(this.post.korisnik_id);
         this.loadMap();
       },
       error: (error) => {
         console.error("Error loading post:", error);
+      },
+    });
+  }
+
+  loadUser(userId: number): void {
+    this.userService.getUser(userId).subscribe({
+      next: (user) => {
+        this.user = user;
+      },
+      error: (error) => {
+        console.error("Error loading user:", error);
       },
     });
   }
