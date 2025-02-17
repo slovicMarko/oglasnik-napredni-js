@@ -1,24 +1,25 @@
-import { Component } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { CategoryService } from '../../services/category.service';
-import { StateService } from '../../services/state.service';
-import { PostService } from '../../services/post.service';
-import { AuthService } from '../../services/auth.service';
+import { Component } from "@angular/core";
+import { NgForm } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { CategoryService } from "../../services/category.service";
+import { StateService } from "../../services/state.service";
+import { PostService } from "../../services/post.service";
+import { AuthService } from "../../services/auth.service";
+import { switchMap } from "rxjs";
 
 @Component({
-  selector: 'app-new-post',
-  templateUrl: './new-post.component.html',
-  styleUrls: ['./new-post.component.css'],
+  selector: "app-new-post",
+  templateUrl: "./new-post.component.html",
+  styleUrls: ["./new-post.component.css"],
 })
 export class NewPostComponent {
   parentCategories: { id: number; naziv: string }[] = [];
   categories: { id: number; naziv: string }[] = [];
   regions: { id: number; naziv: string }[] = [];
   states: { id: number; naziv: string }[] = [];
-  description: string = '';
+  description: string = "";
   price: number = 0;
-  title: string = '';
+  title: string = "";
   postId: number = -1;
   userId: number = -1;
   isAuthor: boolean = false;
@@ -42,12 +43,12 @@ export class NewPostComponent {
   async ngOnInit(): Promise<void> {
     const user = await this.authService.getUser();
     if (user) {
-      this.description = this.description || '';
+      this.description = this.description || "";
       this.loadParentCategories();
       this.loadRegions();
 
       this.route.params.subscribe((params) => {
-        this.postId = +params['id'];
+        this.postId = +params["id"];
       });
 
       if (this.postId) {
@@ -56,16 +57,15 @@ export class NewPostComponent {
         this.postService.getPostbyId(this.postId).subscribe({
           next: (post) => {
             this.post = post;
-            console.log(post);
             this.checkOwnership();
           },
           error: (error) => {
-            console.error('Error loading post:', error);
+            console.error("Error loading post:", error);
           },
         });
       }
     } else {
-      this.router.navigate(['/error']);
+      this.router.navigate(["/error"]);
     }
   }
 
@@ -81,9 +81,9 @@ export class NewPostComponent {
       this.description = this.post.opis;
       this.price = this.post.cijena;
       this.title = this.post.naslov;
-      console.log('vlasnik');
+      console.log("vlasnik");
     } else {
-      console.log('restrikcija');
+      console.log("restrikcija");
     }
   }
 
@@ -93,7 +93,7 @@ export class NewPostComponent {
         this.parentCategories = parentCategories;
       },
       error: (error) => {
-        console.error('Error loading posts:', error);
+        console.error("Error loading posts:", error);
       },
     });
   }
@@ -106,7 +106,7 @@ export class NewPostComponent {
           this.categories = categories;
         },
         error: (error) => {
-          console.error('Error loading categories:', error);
+          console.error("Error loading categories:", error);
         },
       });
   }
@@ -117,7 +117,7 @@ export class NewPostComponent {
         this.regions = regions;
       },
       error: (error) => {
-        console.error('Error loading posts:', error);
+        console.error("Error loading posts:", error);
       },
     });
   }
@@ -128,7 +128,7 @@ export class NewPostComponent {
         this.states = states;
       },
       error: (error) => {
-        console.error('Error loading categories:', error);
+        console.error("Error loading categories:", error);
       },
     });
   }
@@ -137,8 +137,8 @@ export class NewPostComponent {
     const input = event.target as HTMLInputElement;
     if (!input.files) return;
 
-    if (input.files.length > 5) {
-      alert('Možete uploadati maksimalno 5 slika.');
+    if (input.files.length > 1) {
+      alert("Možete uploadati maksimalno 1 sliku.");
       return;
     }
 
@@ -147,12 +147,12 @@ export class NewPostComponent {
 
   onSubmit(form: NgForm): void {
     if (!form.valid) {
-      alert('Molimo popunite sva polja!');
+      alert("Molimo popunite sva polja!");
       return;
     }
 
     if (this.photos.length > 5) {
-      alert('Možete uploadati maksimalno 5 slika.');
+      alert("Možete uploadati maksimalno 1 sliku.");
       return;
     }
 
@@ -164,46 +164,68 @@ export class NewPostComponent {
   }
 
   addNewPost(form: NgForm): void {
-    const korisnik_id = JSON.parse(localStorage.getItem('user') || 'null').user
+    const korisnik_id = JSON.parse(localStorage.getItem("user") || "null").user
       .id;
     const newPost = { ...form.value, korisnik_id };
 
-    console.log('✅ Novi oglas:', newPost);
-    console.log('📸 Slike:', this.photos);
+    console.log("✅ Novi oglas:", newPost);
+    console.log("📸 Slike:", this.photos);
 
     form.resetForm();
     this.photos = [];
 
     this.postService.addPost(newPost).subscribe({
       next: () => {
-        this.router.navigate(['/profile']);
+        this.router.navigate(["/profile"]);
       },
       error: (error) => {
-        console.error('Error while adding post:', error);
+        console.error("Error while adding post:", error);
       },
     });
   }
 
   updatedPost(form: NgForm): void {
-    const updatedPost = {
+    const formData = new FormData();
+
+    formData.append("id", this.postId.toString());
+    formData.append("korisnik_id", this.userId.toString());
+
+    if (this.photos.length > 0) {
+      this.photos.forEach((photo) => {
+        formData.append("images", photo);
+      });
+    }
+
+    let updatedPost = {
       ...form.value,
       id: this.postId,
       korisnik_id: this.userId,
     };
 
-    console.log('✅ Uređeni oglas:', updatedPost);
-    console.log('📸 Slike:', this.photos);
-
     form.resetForm();
     this.photos = [];
 
-    this.postService.updatePost(updatedPost).subscribe({
-      next: () => {
-        this.router.navigate(['/profile']);
-      },
-      error: (error) => {
-        console.error('Error while updating post:', error);
-      },
-    });
+    this.postService
+      .uploadMultipleImages(formData)
+      .pipe(
+        switchMap((res) => {
+          if (res) {
+            updatedPost = {
+              ...updatedPost,
+              slike: res,
+            };
+          }
+          console.log(updatedPost);
+          return this.postService.updatePost(updatedPost);
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.router.navigate(["/profile"]);
+        },
+        error: (error) => {
+          console.error("Error while processing post:", error);
+        },
+      });
   }
 }

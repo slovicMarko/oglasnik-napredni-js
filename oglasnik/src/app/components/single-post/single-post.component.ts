@@ -1,11 +1,11 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { PostService } from '../../services/post.service';
+import { Component } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { PostService } from "../../services/post.service";
 
 @Component({
-  selector: 'app-single-post',
-  templateUrl: './single-post.component.html',
-  styleUrls: ['./single-post.component.css'],
+  selector: "app-single-post",
+  templateUrl: "./single-post.component.html",
+  styleUrls: ["./single-post.component.css"],
 })
 export class SinglePostComponent {
   post: any = {};
@@ -13,7 +13,7 @@ export class SinglePostComponent {
   map: any;
   lat: number = 45.1;
   lng: number = 15.2;
-  query: string = '';
+  query: string = "";
 
   constructor(
     private postService: PostService,
@@ -22,7 +22,7 @@ export class SinglePostComponent {
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
-      this.postId = +params['id'];
+      this.postId = +params["id"];
       this.loadPosts();
     });
   }
@@ -30,12 +30,12 @@ export class SinglePostComponent {
   loadPosts(): void {
     this.postService.getPostbyId(this.postId).subscribe({
       next: (post) => {
-        this.post = post;
+        this.post = post[0];
         this.query = `${this.post.grad}, ${this.post.zupanija}`;
         this.loadMap();
       },
       error: (error) => {
-        console.error('Error loading post:', error);
+        console.error("Error loading post:", error);
       },
     });
   }
@@ -44,7 +44,7 @@ export class SinglePostComponent {
     const geocoder = new google.maps.Geocoder();
 
     geocoder.geocode({ address: this.query }, (results, status) => {
-      if (status === 'OK' && results && results.length > 0) {
+      if (status === "OK" && results && results.length > 0) {
         const location = results[0].geometry.location;
         this.lat = location.lat();
         this.lng = location.lng();
@@ -56,7 +56,7 @@ export class SinglePostComponent {
         };
 
         this.map = new google.maps.Map(
-          document.getElementById('map') as HTMLElement,
+          document.getElementById("map") as HTMLElement,
           mapOptions
         );
 
@@ -66,7 +66,7 @@ export class SinglePostComponent {
           title: results[0].formatted_address,
         });
       } else {
-        alert('Location not found: ' + status);
+        alert("Location not found: " + status);
       }
     });
   }

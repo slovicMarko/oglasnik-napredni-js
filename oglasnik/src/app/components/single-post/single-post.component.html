@@ -5,7 +5,14 @@
 
       <div class="post-meta">
         <div class="post-image">
-          <img src="assets/images/default.jpg" alt="Slika oglasa" />
+          <img
+            [src]="
+              post.slike?.length
+                ? 'http://localhost:5000/' + post.slike[0]
+                : 'assets/images/default.jpg'
+            "
+            alt="Slika oglasa"
+          />
         </div>
 
         <p><strong>Kategorija:</strong> {{ post.kategorija }}</p>

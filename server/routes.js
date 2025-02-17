@@ -23,9 +23,9 @@ import {
   register,
   updatePost,
   updateUser,
-  getPosts,
   getPostsStatistics,
   getUsers,
+  getAllPosts,
 } from "./controllers.js";
 const router = express.Router();
 
@@ -45,7 +45,7 @@ router.delete("/deleteUser/:userId", deleteUser);
 // rute za postove
 router.post("/createPost/", createPost);
 router.put("/updatePost/", updatePost);
-router.get("/getPosts", getPosts);
+router.get("/getPosts", getAllPosts);
 router.get(
   "/getPostsParentCategory/:parentCategoryId",
   getPostsByParentCategoryId

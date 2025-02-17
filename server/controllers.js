@@ -1,6 +1,7 @@
 import mysql from "mysql2";
 import bcrypt from "bcrypt";
 import session from "express-session";
+import { promisify } from "util";
 
 const db = mysql.createConnection({
   host: "localhost",
@@ -36,13 +37,11 @@ export const login = (req, res) => {
     }
     const user = results[0];
 
-    // Bcrypt compare async method
     bcrypt.compare(password, user.lozinka, (err, match) => {
       if (err || !match) {
         return res.status(400).send({ error: "Invalid password" });
       }
 
-      // If passwords match
       req.session.user = {
         id: user.id,
         username: user.username,
@@ -122,90 +121,106 @@ export const createPost = (req, res) => {
   );
 };
 
-export const updatePost = (req, res) => {
-  const { id, cijena, grad, korisnik_id, naslov, opis } = req.body;
-  const query = `UPDATE oglasi SET naslov = ?, opis = ?, cijena = ?, grad_id = ? WHERE id = ? AND korisnik_id = ?`;
-  db.query(
-    query,
-    [naslov, opis, cijena, grad, id, korisnik_id],
-    (err, result) => {
-      if (err) return res.status(400).send(err);
-      res.send({ message: "Post updated successfully" });
-    }
-  );
+const query = promisify(db.query).bind(db);
+
+export const updatePost = async (req, res) => {
+  try {
+    const { id, cijena, grad, korisnik_id, naslov, opis, slike } = req.body;
+    console.log({ id, cijena, grad, korisnik_id, naslov, opis, slike });
+
+    const updateQuery = `UPDATE oglasi SET naslov = ?, opis = ?, cijena = ?, grad_id = ? WHERE id = ? AND korisnik_id = ?`;
+
+    await query(updateQuery, [naslov, opis, cijena, grad, id, korisnik_id]);
+
+    await deleteImages(id);
+    await addImages(id, slike);
+
+    res.send({ message: "Post updated successfully" });
+  } catch (error) {
+    console.error("Error updating post:", error);
+    res.status(500).send({ message: "Internal server error", error });
+  }
 };
 
-export const getPosts = (req, res) => {
-  const query = `SELECT o.*, k.naziv AS kategorija, g.naziv AS grad, u.username AS korisnik, z.naziv as zupanija FROM oglasi o 
-                 INNER JOIN korisnici u ON o.korisnik_id = u.id
-                 INNER JOIN kategorije k ON o.kategorija_id = k.id
-                 INNER JOIN gradovi g ON o.grad_id = g.id
-                 INNER JOIN zupanije z ON g.zupanija_id  = z.id
-                 ORDER BY o.datum_objave DESC`;
-  db.query(query, (err, result) => {
+const deleteImages = (oglas_id) => {
+  return new Promise((resolve, reject) => {
+    const query = `DELETE FROM slike_oglasa WHERE oglas_id = ?`;
+    db.query(query, [oglas_id], (err, result) => {
+      if (err) return reject(err);
+      resolve(result);
+    });
+  });
+};
+
+const addImages = (oglas_id, slike) => {
+  if (!slike || slike.length === 0) {
+    return Promise.resolve();
+  }
+
+  const query = `INSERT INTO slike_oglasa (oglas_id, url_slike) VALUES (?,?)`;
+
+  const insertPromises = slike.map((slika) => {
+    return new Promise((resolve, reject) => {
+      db.query(query, [oglas_id, slika], (err, result) => {
+        if (err) return reject(err);
+        resolve(result);
+      });
+    });
+  });
+
+  return Promise.all(insertPromises);
+};
+
+const getPostsQuery = `
+  SELECT 
+    o.*, 
+    k.naziv AS kategorija, 
+    g.naziv AS grad, 
+    u.username AS korisnik, 
+    z.naziv AS zupanija,
+    GROUP_CONCAT(s.url_slike) AS slike 
+  FROM oglasi o
+  INNER JOIN korisnici u ON o.korisnik_id = u.id
+  INNER JOIN kategorije k ON o.kategorija_id = k.id
+  INNER JOIN gradovi g ON o.grad_id = g.id
+  INNER JOIN zupanije z ON g.zupanija_id  = z.id
+  LEFT JOIN slike_oglasa s ON o.id = s.oglas_id
+`;
+
+const getPosts = (whereClause = "", params = [], res) => {
+  const query = `${getPostsQuery} ${whereClause} GROUP BY o.id ORDER BY o.datum_objave DESC`;
+
+  db.query(query, params, (err, result) => {
     if (err) return res.status(400).send(err);
+
+    result.forEach((post) => {
+      post.slike = post.slike
+        ? post.slike.split(",").map((slika) => slika.replace("\\", "/"))
+        : [];
+    });
+    console.log(result);
     res.send(result);
   });
+};
+
+export const getAllPosts = (req, res) => {
+  getPosts("", [], res);
 };
 
 export const getPostsByParentCategoryId = (req, res) => {
-  const { parentCategoryId } = req.params;
-  const query = `SELECT o.*, k.naziv AS kategorija, g.naziv AS grad, u.username AS korisnik, z.naziv as zupanija FROM oglasi o 
-                 INNER JOIN korisnici u ON o.korisnik_id = u.id
-                 INNER JOIN kategorije k ON o.kategorija_id = k.id
-                 INNER JOIN gradovi g ON o.grad_id = g.id
-                 INNER JOIN zupanije z ON g.zupanija_id  = z.id
-                 WHERE k.nadkategorija_id  = ?
-                 ORDER BY o.datum_objave DESC`;
-  db.query(query, [parentCategoryId], (err, result) => {
-    if (err) return res.status(400).send(err);
-    res.send(result);
-  });
+  getPosts("WHERE k.nadkategorija_id = ?", [req.params.parentCategoryId], res);
 };
 
 export const getPostsByCategoryId = (req, res) => {
-  const { categoryId } = req.params;
-  const query = `SELECT o.*, k.naziv AS kategorija, g.naziv AS grad, u.username AS korisnik, z.naziv as zupanija FROM oglasi o 
-                 INNER JOIN korisnici u ON o.korisnik_id = u.id
-                 INNER JOIN kategorije k ON o.kategorija_id = k.id
-                 INNER JOIN gradovi g ON o.grad_id = g.id
-                 INNER JOIN zupanije z ON g.zupanija_id  = z.id
-                 WHERE k.id = ?
-                 ORDER BY o.datum_objave DESC`;
-  db.query(query, [categoryId], (err, result) => {
-    if (err) return res.status(400).send(err);
-    res.send(result);
-  });
+  getPosts("WHERE k.id = ?", [req.params.categoryId], res);
 };
 
 export const getPostById = (req, res) => {
-  const { postId } = req.params;
-  const query = `SELECT o.*, k.naziv AS kategorija, k.nadkategorija_id, g.naziv AS grad, z.id, u.username AS korisnik, z.id as zupanija_id ,z.naziv as zupanija FROM oglasi o
-                 INNER JOIN korisnici u ON o.korisnik_id = u.id
-                 INNER JOIN kategorije k ON o.kategorija_id = k.id
-                 INNER JOIN gradovi g ON o.grad_id = g.id
-                 INNER JOIN zupanije z ON g.zupanija_id  = z.id
-                 WHERE o.id = ?`;
-  db.query(query, [postId], (err, result) => {
-    if (err || result.length === 0)
-      return res.status(400).send({ error: "Post not found" });
-    res.send(result[0]);
-  });
+  getPosts("WHERE o.id = ?", [req.params.postId], res);
 };
 
 export const filterPostsByUser = (req, res) => {
-  const { userId } = req.params;
-  const query = `SELECT o.*, k.naziv AS kategorija, g.naziv AS grad, u.username AS korisnik, z.naziv as zupanija FROM oglasi o
-                 INNER JOIN korisnici u ON o.korisnik_id = u.id
-                 INNER JOIN kategorije k ON o.kategorija_id = k.id
-                 INNER JOIN gradovi g ON o.grad_id = g.id
-                 INNER JOIN zupanije z ON g.zupanija_id  = z.id
-                 WHERE o.korisnik_id = ?
-                 ORDER BY o.datum_objave DESC`;
-  db.query(query, [userId], (err, result) => {
-    if (err) return res.status(400).send(err);
-    res.send(result);
-  });
+  getPosts("WHERE o.korisnik_id = ?", [req.params.userId], res);
 };
 
 export const deletePost = (req, res) => {

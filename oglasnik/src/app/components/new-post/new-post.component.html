@@ -94,7 +94,7 @@
     </div>
 
     <div class="form-group">
-      <label for="slike">Dodaj slike (max 5)</label>
+      <label for="slike">Dodaj sliku</label>
       <input
         type="file"
         id="slike"
@@ -103,9 +103,6 @@
         accept="image/*"
         multiple
       />
-      <p *ngIf="photos && photos.length > 0">
-        Odabrano slika: {{ photos.length }} / 5
-      </p>
     </div>
 
     <button

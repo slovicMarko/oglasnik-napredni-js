@@ -1,16 +1,16 @@
-import { Injectable } from '@angular/core';
-import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { HttpHeaders, HttpClient } from "@angular/common/http";
+import { Router } from "@angular/router";
+import { Observable } from "rxjs";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class PostService {
-  private readonly baseUrl: string = 'http://localhost:5000/route';
-  private apiUrl = 'http://localhost:3000/api/posts';
+  private readonly baseUrl: string = "http://localhost:5000/route";
+  private apiUrl = "http://localhost:3000/api/posts";
   private readonly headers: HttpHeaders = new HttpHeaders({
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   });
 
   constructor(private http: HttpClient, private router: Router) {}
@@ -72,6 +72,7 @@ export class PostService {
     korisnik_id,
     naslov,
     opis,
+    slike,
   }: {
     id: number;
     cijena: number;
@@ -79,6 +80,7 @@ export class PostService {
     korisnik_id: number;
     naslov: string;
     opis: string;
+    slike: any;
   }) {
     return this.http.put<any>(
       `${this.baseUrl}/updatePost`,
@@ -89,6 +91,7 @@ export class PostService {
         korisnik_id,
         naslov,
         opis,
+        slike,
       },
       this.httpOptions
     );
@@ -121,5 +124,9 @@ export class PostService {
       },
       this.httpOptions
     );
+  }
+
+  uploadMultipleImages(formData: FormData) {
+    return this.http.post("http://localhost:5000/upload-multiple", formData);
   }
 }
