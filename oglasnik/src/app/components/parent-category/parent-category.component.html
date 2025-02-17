@@ -1,0 +1,41 @@
+<main class="form-container">
+  <input
+    type="text"
+    [(ngModel)]="searchQuery"
+    (input)="onSearch()"
+    placeholder="Pretraži oglase..."
+    class="search-input"
+  />
+  <a
+    *ngFor="let parentCategory of parentCategories"
+    [routerLink]="['/category', parentCategory.id]"
+    class="parentCategory"
+  >
+    {{ parentCategory.naziv }}
+  </a>
+</main>
+<hr />
+<main class="posts-container">
+  <div class="post-grid">
+    <a
+      *ngFor="let post of filteredPosts"
+      [routerLink]="['/post', post.id]"
+      class="post-card"
+    >
+      <div class="post-image">
+        <img src="assets/images/default.jpg" alt="Slika oglasa" />
+      </div>
+      <div class="post-details">
+        <h2>{{ post.naslov }}</h2>
+        <p class="location">📍 {{ post.grad }}, {{ post.zupanija }}</p>
+        <p class="date">
+          Objavljen: {{ post.datum_objave | date : "dd.MM.yyyy" }}
+        </p>
+        <p class="description">{{ post.opis | slice : 0 : 100 }}...</p>
+      </div>
+      <div class="post-price">
+        <strong>{{ post.cijena }} €</strong>
+      </div>
+    </a>
+  </div>
+</main>

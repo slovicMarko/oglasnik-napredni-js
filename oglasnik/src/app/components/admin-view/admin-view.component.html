@@ -1,0 +1,78 @@
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>Korisnik</th>
+        <th>Ime korisnika</th>
+        <th>Broj oglasa</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of statistics">
+        <td>{{ user.username }}</td>
+        <td>{{ user.ime }}</td>
+        <td>{{ user.broj_oglasa }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr />
+
+  <div class="users-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Korisnik</th>
+          <th>username</th>
+          <th>Email</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users; let i_user = index">
+          <td>{{ user.username }}</td>
+          <td>{{ user.ime }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+            <button
+              class="btn deleteBtn"
+              (click)="confirmDelete(user, i_user, 'user')"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr />
+
+  <div class="posts-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Korisnik</th>
+          <th>Naziv oglasa</th>
+          <th>Opis Oglasa</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let post of posts; let i = index">
+          <td>{{ post.korisnik }}</td>
+          <td [routerLink]="['/post', post.id]">{{ post.naslov }}</td>
+          <td>{{ post.opis | slice : 0 : 60 }}...</td>
+          <td>
+            <button
+              class="btn deleteBtn"
+              (click)="confirmDelete(post, i, 'post')"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

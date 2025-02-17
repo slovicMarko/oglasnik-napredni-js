@@ -1,0 +1,87 @@
+.outer-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f2f5;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 30px;
+  background: #ffffff;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+h1 {
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 2rem;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  margin-top: 5px;
+}
+
+.form-group input:focus {
+  border-color: #548c2f;
+  outline: none;
+}
+
+.btn-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.btn {
+  width: 48%;
+  padding: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.loginBtn {
+  background-color: #548c2f;
+  color: white;
+}
+
+.loginBtn:hover {
+  background-color: #4d7f27;
+}
+
+.registerBtn {
+  background-color: white;
+  color: #548c2f;
+  border: 2px solid #548c2f;
+}
+
+.registerBtn:hover {
+  background-color: #548c2f;
+  color: white;
+}
+
+.registerBtn:focus {
+  outline: none;
+}

@@ -1,0 +1,22 @@
+<main class="posts-container">
+  <a
+    *ngFor="let post of posts"
+    [routerLink]="['/post', post.id]"
+    class="post-card"
+  >
+    <div class="post-image">
+      <img src="assets/images/default.jpg" alt="Slika oglasa" />
+    </div>
+    <div class="post-details">
+      <h2>{{ post.naslov }}</h2>
+      <p class="location">📍 {{ post.grad }}, {{ post.zupanija }}</p>
+      <p class="date">
+        Objavljen: {{ post.datum_objave | date : "dd.MM.yyyy" }}
+      </p>
+      <p class="description">{{ post.opis | slice : 0 : 100 }}...</p>
+    </div>
+    <div class="post-price">
+      <strong>{{ post.cijena }} €</strong>
+    </div>
+  </a>
+</main>

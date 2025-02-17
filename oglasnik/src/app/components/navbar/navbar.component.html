@@ -1,0 +1,23 @@
+<nav class="navbar">
+  <div class="container">
+    <a routerLink="/" class="logo">Oglasnik.hr</a>
+    <ul *ngIf="authService.isAdmin()" class="admin-links">
+      <li><a routerLink="/admin/statistic">ADMIN</a></li>
+    </ul>
+    <ul class="nav-links">
+      <li><a routerLink="/">Početna</a></li>
+      <li *ngIf="authService.isLoggedIn()">
+        <a routerLink="/profile">Profil</a>
+      </li>
+      <li *ngIf="!authService.isLoggedIn()">
+        <a routerLink="/login">Prijava</a>
+      </li>
+      <li *ngIf="!authService.isLoggedIn()">
+        <a routerLink="/register">Registracija</a>
+      </li>
+      <li *ngIf="authService.isLoggedIn()">
+        <a (click)="logout()">Odjava</a>
+      </li>
+    </ul>
+  </div>
+</nav>

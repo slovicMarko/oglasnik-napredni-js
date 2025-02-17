@@ -1,0 +1,118 @@
+<div class="new-post-container">
+  <h2>Dodaj novi oglas</h2>
+  <form (ngSubmit)="onSubmit(postForm)" #postForm="ngForm">
+    <div class="form-group">
+      <label for="nadkategorija">Nadkategorija</label>
+      <select
+        id="nadkategorija"
+        name="nadkategorija"
+        [(ngModel)]="selectedParentCategories"
+        (change)="onParentCategoryChange()"
+        required
+        [disabled]="isAuthor"
+      >
+        <option
+          *ngFor="let parentCategory of parentCategories"
+          [value]="parentCategory.id"
+        >
+          {{ parentCategory.naziv }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="kategorija">Kategorija</label>
+      <select
+        id="kategorija"
+        name="kategorija"
+        [(ngModel)]="selectedCategory"
+        required
+        [disabled]="isAuthor"
+      >
+        <option *ngFor="let category of categories" [value]="category.id">
+          {{ category.naziv }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="zupanija">Županija</label>
+      <select
+        id="zupanija"
+        name="zupanija"
+        [(ngModel)]="selectedRegion"
+        (change)="onRegionChange()"
+        required
+      >
+        <option *ngFor="let region of regions" [value]="region.id">
+          {{ region.naziv }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="grad">Grad</label>
+      <select id="grad" name="grad" [(ngModel)]="selectedState" required>
+        <option *ngFor="let state of states" [value]="state.id">
+          {{ state.naziv }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="naslov">Naslov</label>
+      <input
+        type="text"
+        id="naslov"
+        name="naslov"
+        [(ngModel)]="title"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="cijena">Cijena (€)</label>
+      <input
+        type="number"
+        id="cijena"
+        name="cijena"
+        [(ngModel)]="price"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="opis">Opis oglasa</label>
+      <textarea
+        id="opis"
+        name="opis"
+        [(ngModel)]="description"
+        required
+        maxlength="1000"
+      ></textarea>
+      <p>{{ description ? description.length : 0 }}/1000 znakova</p>
+    </div>
+
+    <div class="form-group">
+      <label for="slike">Dodaj slike (max 5)</label>
+      <input
+        type="file"
+        id="slike"
+        name="slike"
+        (change)="onFileChange($event)"
+        accept="image/*"
+        multiple
+      />
+      <p *ngIf="photos && photos.length > 0">
+        Odabrano slika: {{ photos.length }} / 5
+      </p>
+    </div>
+
+    <button
+      type="submit"
+      class="submit-button"
+      [disabled]="postForm.invalid"
+      [innerText]="isAuthor ? 'Uredi oglas' : 'Dodaj oglas'"
+    ></button>
+  </form>
+</div>
