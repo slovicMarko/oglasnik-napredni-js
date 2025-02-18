@@ -61,7 +61,7 @@ export class NewPostComponent {
             this.checkOwnership();
           },
           error: (error) => {
-            console.error("Error loading post:", error);
+            alert("Greška učitavanja oglasa");
           },
         });
       }
@@ -92,8 +92,8 @@ export class NewPostComponent {
       next: (parentCategories) => {
         this.parentCategories = parentCategories;
       },
-      error: (error) => {
-        console.error("Error loading posts:", error);
+      error: () => {
+        alert("Greška u čitanju nadkategorija");
       },
     });
   }
@@ -105,8 +105,8 @@ export class NewPostComponent {
         next: (categories) => {
           this.categories = categories;
         },
-        error: (error) => {
-          console.error("Error loading categories:", error);
+        error: () => {
+          alert("Greška u promijeni nadkategorije");
         },
       });
   }
@@ -116,8 +116,8 @@ export class NewPostComponent {
       next: (regions) => {
         this.regions = regions;
       },
-      error: (error) => {
-        console.error("Error loading posts:", error);
+      error: () => {
+        alert("Greška u čitanju županija");
       },
     });
   }
@@ -127,8 +127,8 @@ export class NewPostComponent {
       next: (states) => {
         this.states = states;
       },
-      error: (error) => {
-        console.error("Error loading categories:", error);
+      error: () => {
+        alert("Greška u promijeni županije");
       },
     });
   }
@@ -139,10 +139,20 @@ export class NewPostComponent {
 
     if (input.files.length > 1) {
       alert("Možete uploadati maksimalno 1 sliku.");
+      input.value = "";
       return;
     }
 
-    this.photos = Array.from(input.files);
+    const file = input.files[0];
+    const maxSize = 5 * 1024 * 1024;
+
+    if (file.size > maxSize) {
+      alert("Veličina slike ne smije biti veća od 5MB.");
+      input.value = "";
+      return;
+    }
+
+    this.photos = [file];
   }
 
   onSubmit(form: NgForm): void {
@@ -168,9 +178,6 @@ export class NewPostComponent {
       .id;
     const newPost = { ...form.value, korisnik_id };
 
-    console.log("✅ Novi oglas:", newPost);
-    console.log("📸 Slike:", this.photos);
-
     form.resetForm();
     this.photos = [];
 
@@ -178,8 +185,8 @@ export class NewPostComponent {
       next: () => {
         this.router.navigate(["/profile"]);
       },
-      error: (error) => {
-        console.error("Error while adding post:", error);
+      error: () => {
+        alert("Greška kod dodavanja novog oglasa");
       },
     });
   }
@@ -215,7 +222,6 @@ export class NewPostComponent {
               slike: res,
             };
           }
-          console.log(updatedPost);
           return this.postService.updatePost(updatedPost);
         })
       )
@@ -223,8 +229,9 @@ export class NewPostComponent {
         next: () => {
           this.router.navigate(["/profile"]);
         },
-        error: (error) => {
-          console.error("Error while processing post:", error);
+        error: () => {
+          alert("Greška ažuriranja oglasa");
+          this.router.navigate(["/error"]);
         },
       });
   }

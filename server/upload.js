@@ -1,30 +1,33 @@
 import multer from "multer";
 import path from "path";
 
-// Postavke za multer (spremanje slika u folder 'uploads')
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/"); // pohranjivanje slika u direktorij 'uploads'
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
   },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // ime slike bit će timestamp + ekstenzija
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
   },
 });
 
-const upload = multer({ storage: storage });
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = /jpeg|jpg|png|webp/;
+  const extName = allowedTypes.test(
+    path.extname(file.originalname).toLowerCase()
+  );
+  const mimeType = allowedTypes.test(file.mimetype);
 
-// Ruta za upload slika
-const uploadImage = (req, res) => {
-  if (!req.file) {
-    return res.status(400).send("No file uploaded.");
+  if (extName && mimeType) {
+    return cb(null, true);
+  } else {
+    return cb(new Error("Only images are allowed!"));
   }
-  // Možeš spremiti informacije o slici u bazu podataka ako treba
-  res
-    .status(200)
-    .send({
-      message: "File uploaded successfully",
-      filePath: `/uploads/${req.file.filename}`,
-    });
 };
 
-export { upload, uploadImage };
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 },
+});
+
+export default upload;
