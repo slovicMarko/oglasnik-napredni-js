@@ -1,25 +1,35 @@
-import { Component, OnInit } from '@angular/core';
-import { PostService } from '../../services/post.service';
+import { Component, OnInit } from "@angular/core";
+import { PostService } from "../../services/post.service";
+import { AuthService } from "../../services/auth.service";
+import { Router } from "@angular/router";
 
 @Component({
-  selector: 'app-profile',
-  templateUrl: './profile.component.html',
-  styleUrl: './profile.component.css',
+  selector: "app-profile",
+  templateUrl: "./profile.component.html",
+  styleUrl: "./profile.component.css",
 })
 export class ProfileComponent implements OnInit {
   id: number = -1;
   user: any = {};
   posts: any[] = [];
 
-  constructor(private postService: PostService) {}
+  constructor(
+    private postService: PostService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    const user = JSON.parse(localStorage.getItem('user') || 'null');
-    if (user) {
-      this.setUserDetails(user);
-      this.loadUserPosts();
+    if (this.authService.isLoggedIn()) {
+      const user = JSON.parse(localStorage.getItem("user") || "null");
+      if (user) {
+        this.setUserDetails(user);
+        this.loadUserPosts();
+      } else {
+        console.warn("No user data found");
+      }
     } else {
-      console.warn('No user data found');
+      this.router.navigate(["/error"]);
     }
   }
 
@@ -33,7 +43,7 @@ export class ProfileComponent implements OnInit {
         this.posts = posts;
       },
       error: (error) => {
-        console.error('Error loading user posts:', error);
+        console.error("Error loading user posts:", error);
       },
     });
   }
@@ -44,7 +54,7 @@ export class ProfileComponent implements OnInit {
 
   confirmDelete(post: any, index: number): void {
     const confirmDelete = confirm(
-      'Jeste li sigurni da želite obrisati ovaj oglas?'
+      "Jeste li sigurni da želite obrisati ovaj oglas?"
     );
     if (confirmDelete) {
       this.deletePost(post, index);
@@ -56,7 +66,7 @@ export class ProfileComponent implements OnInit {
       next: () => {
         this.posts.splice(index, 1);
       },
-      error: (error) => console.error('Error deleting post:', error),
+      error: (error) => console.error("Error deleting post:", error),
     });
   }
 }
